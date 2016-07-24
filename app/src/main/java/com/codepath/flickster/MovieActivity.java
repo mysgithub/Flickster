@@ -1,9 +1,12 @@
 package com.codepath.flickster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.codepath.flickster.adapters.MoviesAdapter;
@@ -30,6 +33,8 @@ public class MovieActivity extends AppCompatActivity {
 
   String movieDBUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
+  private final int REQUEST_CODE = 20;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -41,9 +46,11 @@ public class MovieActivity extends AppCompatActivity {
     swipeContainer.setOnRefreshListener(onRefreshListener);
 
     lvItems = (ListView) findViewById(R.id.lvMovies);
+
     movies = new ArrayList<>();
     movieAdapter = new MoviesAdapter(this, movies);
     lvItems.setAdapter(movieAdapter);
+    lvItems.setOnItemClickListener(onItemClickListener);
 
     httpClient = new AsyncHttpClient();
     fetchMoviesList();
@@ -80,7 +87,6 @@ public class MovieActivity extends AppCompatActivity {
   }
 
 
-
   private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
     @Override
     public void onRefresh() {
@@ -88,5 +94,33 @@ public class MovieActivity extends AppCompatActivity {
       fetchMoviesList();
     }
   };
+
+  AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      launchMovieDetailView(position);
+    }
+  };
+
+
+  public void launchMovieDetailView(int position){
+
+    Movie movie = movies.get(position);
+    // If rating is greater than 5 then launch YouTube
+    Intent i;
+    if(movie.getVoteAverage() > 4.99){
+      i = new Intent(MovieActivity.this, PlayYouTubeActivity.class);
+      i.putExtra("movieId", movie.getMovieId());
+    }else{
+      // first parameter is the context, second is the class of the activity to launch
+      i = new Intent(MovieActivity.this, MovieDetailActivity.class);
+      i.putExtra("backdropImageUrl", movie.getBackdropPath());
+      i.putExtra("title", movie.getOriginalTitle());
+      i.putExtra("overview", movie.getOverview());
+      i.putExtra("rating", movie.getVoteAverage());
+    }
+    // brings up the second activity
+    startActivity(i);
+  }
 
 }

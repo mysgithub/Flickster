@@ -16,6 +16,8 @@ public class Movie {
   private boolean isVideo;
   private double voteAverage;
   private String backdropPath;
+  private long movieId;
+
 
   public Movie(JSONObject jsonObject) throws JSONException{
     this.posterPath = String.format("https://image.tmdb.org/t/p/w342%s", jsonObject.getString("poster_path"));
@@ -24,6 +26,7 @@ public class Movie {
     this.isVideo = jsonObject.getBoolean("video");
     this.voteAverage = jsonObject.getDouble("vote_average");
     this.backdropPath = String.format("https://image.tmdb.org/t/p/w300%s", jsonObject.getString("backdrop_path"));
+    this.movieId = jsonObject.getLong("id");
   }
 
   public static ArrayList<Movie> fromJSONArray(JSONArray array){
@@ -87,5 +90,13 @@ public class Movie {
 
   public void setBackdropPath(String backdropPath) {
     this.backdropPath = backdropPath;
+  }
+
+  public long getMovieId() {
+    return movieId;
+  }
+
+  public void setMovieId(long movieId) {
+    this.movieId = movieId;
   }
 }

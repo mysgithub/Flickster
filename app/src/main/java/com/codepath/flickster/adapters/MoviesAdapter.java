@@ -25,7 +25,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(final int position, View convertView, ViewGroup parent) {
     // Get item at position
     Movie movie = getItem(position);
 
@@ -58,7 +58,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
     int orientation = getContext().getResources().getConfiguration().orientation;
     if(orientation == Configuration.ORIENTATION_PORTRAIT){
       Picasso.with(getContext()).load(movie.getPosterPath())
-          .resize(300, 0)
+          .resize(275, 0)
           .placeholder(R.mipmap.ic_movie_placeholder)
           .error(R.mipmap.ic_movie_placeholder_error)
           .into(viewHolder.ivImage);
@@ -69,6 +69,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
           .error(R.mipmap.ic_movie_placeholder_error)
           .into(viewHolder.ivImage);
     }
+
 
     // Return the completed view to render on screen
     return convertView;

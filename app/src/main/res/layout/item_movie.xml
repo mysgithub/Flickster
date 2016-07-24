@@ -12,7 +12,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         tools:src="@mipmap/ic_launcher"
-        android:adjustViewBounds="true"
         />
 
     <TextView
