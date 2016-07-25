@@ -108,7 +108,7 @@ public class MovieActivity extends AppCompatActivity {
     Movie movie = movies.get(position);
     // If rating is greater than 5 then launch YouTube
     Intent i;
-    if(movie.getVoteAverage() > 4.99){
+    if(movie.getVoteAverage() > 5.00){
       i = new Intent(MovieActivity.this, PlayYouTubeActivity.class);
       i.putExtra("movieId", movie.getMovieId());
     }else{

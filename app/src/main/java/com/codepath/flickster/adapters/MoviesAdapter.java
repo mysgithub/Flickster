@@ -20,6 +20,11 @@ import java.util.ArrayList;
  */
 public class MoviesAdapter extends ArrayAdapter<Movie> {
 
+  public enum LayoutTypeValues {
+    POPULAR, REGULAR
+  }
+
+
   public MoviesAdapter(Context context, ArrayList<Movie> movies){
     super(context, 0, movies);
   }
@@ -27,44 +32,61 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
   @Override
   public View getView(final int position, View convertView, ViewGroup parent) {
     // Get item at position
-    Movie movie = getItem(position);
+    int type = getItemViewType(position);
+    if(type == LayoutTypeValues.REGULAR.ordinal()){
+      ViewHolderDetail viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
+        viewHolder = new ViewHolderDetail();
+        // Get Views
+        viewHolder.ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+        viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+        viewHolder.tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
 
-    // Check if an existing view is being reused, otherwise inflate the view
-    ViewHolder viewHolder; // view lookup cache stored in tag
-    if(convertView == null){
-      // If there's no view to re-use, inflate a brand new view for row
-      viewHolder = new ViewHolder();
+        convertView.setTag(viewHolder);
+      }else{
+        viewHolder = (ViewHolderDetail) convertView.getTag();
+      }
+      // Position object
+      Movie movie = getItem(position);
 
-      LayoutInflater inflater = LayoutInflater.from(getContext());
-      convertView = inflater.inflate(R.layout.item_movie, parent, false);
+      //Set Values
+      viewHolder.ivImage.setImageResource(0);
+      viewHolder.tvTitle.setText(movie.getOriginalTitle());
+      viewHolder.tvOverview.setText(movie.getOverview());
 
-      viewHolder.ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-      viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-      viewHolder.tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+      int orientation = getContext().getResources().getConfiguration().orientation;
+      if(orientation == Configuration.ORIENTATION_PORTRAIT){
+        Picasso.with(getContext()).load(movie.getPosterPath())
+            .resize(275, 0)
+            .placeholder(R.mipmap.ic_movie_placeholder)
+            .error(R.mipmap.ic_movie_placeholder_error)
+            .into(viewHolder.ivImage);
+      }else if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+        Picasso.with(getContext()).load(movie.getBackdropPath())
+            .resize(500, 0)
+            .placeholder(R.mipmap.ic_movie_placeholder)
+            .error(R.mipmap.ic_movie_placeholder_error)
+            .into(viewHolder.ivImage);
+      }
 
-      // Cache the viewHolder object inside the fresh view
-      convertView.setTag(viewHolder);
-    }else {
-      // View is being recycled, retrieve the viewHolder object from tag
-      viewHolder = (ViewHolder) convertView.getTag();
-    }
-
-    // Lookup view for data population
-    viewHolder.ivImage.setImageResource(0); // clear image resource
-    // Populate the data into the template view using the data object
-    viewHolder.tvTitle.setText(movie.getOriginalTitle());
-    viewHolder.tvOverview.setText(movie.getOverview());
-
-    int orientation = getContext().getResources().getConfiguration().orientation;
-    if(orientation == Configuration.ORIENTATION_PORTRAIT){
-      Picasso.with(getContext()).load(movie.getPosterPath())
-          .resize(275, 0)
-          .placeholder(R.mipmap.ic_movie_placeholder)
-          .error(R.mipmap.ic_movie_placeholder_error)
-          .into(viewHolder.ivImage);
-    }else if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+    }else if(type == LayoutTypeValues.POPULAR.ordinal()){
+      ViewHolderImage viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie_backdrop, parent, false);
+        viewHolder = new ViewHolderImage();
+        // Get Views
+        viewHolder.ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+        convertView.setTag(viewHolder);
+      }else{
+        viewHolder = (ViewHolderImage) convertView.getTag();
+      }
+      // Position object
+      Movie movie = getItem(position);
+      viewHolder.ivImage.setImageResource(0);
+      //Set Values
       Picasso.with(getContext()).load(movie.getBackdropPath())
-          .resize(500, 0)
+          .fit().centerCrop()
           .placeholder(R.mipmap.ic_movie_placeholder)
           .error(R.mipmap.ic_movie_placeholder_error)
           .into(viewHolder.ivImage);
@@ -75,10 +97,35 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
     return convertView;
   }
 
+
+  @Override
+  public int getViewTypeCount() {
+    return LayoutTypeValues.values().length;
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+    Movie movie = getItem(position);
+    int type;
+    if(movie.getVoteAverage() > 5.00){
+      type = LayoutTypeValues.POPULAR.ordinal();
+    }else{
+      type = LayoutTypeValues.REGULAR.ordinal();
+    }
+    return type;
+  }
+
+
+
   // View lookup cache
-  private static class ViewHolder {
+  private static class ViewHolderDetail {
     ImageView ivImage;
     TextView tvTitle;
     TextView tvOverview;
   }
+
+  private static class ViewHolderImage {
+    ImageView ivImage;
+  }
+
 }
