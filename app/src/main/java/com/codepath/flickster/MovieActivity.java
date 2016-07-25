@@ -118,6 +118,7 @@ public class MovieActivity extends AppCompatActivity {
       i.putExtra("title", movie.getOriginalTitle());
       i.putExtra("overview", movie.getOverview());
       i.putExtra("rating", movie.getVoteAverage());
+      i.putExtra("movieId", movie.getMovieId());
     }
     // brings up the second activity
     startActivity(i);
