@@ -10,6 +10,7 @@
     android:paddingTop="5dp"
     tools:context="com.codepath.flickster.MovieActivity"
     android:id="@+id/swipeContainer"
+    android:background="@android:color/white"
     >
 
 
