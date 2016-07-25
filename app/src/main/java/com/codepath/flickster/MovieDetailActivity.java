@@ -16,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class MovieDetailActivity extends YouTubeBaseActivity {
@@ -24,12 +26,16 @@ public class MovieDetailActivity extends YouTubeBaseActivity {
   String videosUrl = "https://api.themoviedb.org/3/movie/%s/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
   String youTubeKey;
 
-  YouTubePlayerView youTubePlayerView;
+  @BindView(R.id.player) YouTubePlayerView youTubePlayerView;
+  @BindView(R.id.tvTitle) TextView tvTitle;
+  @BindView(R.id.tvOverview) TextView tvOverview;
+  @BindView(R.id.ratingBar) RatingBar ratingBar;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movie_detail);
+    ButterKnife.bind(this);
 
     String title = getIntent().getStringExtra("title");
     String backdropImageUrl = getIntent().getStringExtra("backdropImageUrl");
@@ -38,9 +44,6 @@ public class MovieDetailActivity extends YouTubeBaseActivity {
     Long movieId = getIntent().getLongExtra("movieId", 0L); // Get Movie Id and call API
 
     //ImageView ivMovieImage = (ImageView) findViewById(R.id.ivMovieImage);
-    TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
-    TextView tvOverview = (TextView) findViewById(R.id.tvOverview);
-    RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
     // set all values
     /*Picasso.with(getApplicationContext()).load(backdropImageUrl)
@@ -56,12 +59,7 @@ public class MovieDetailActivity extends YouTubeBaseActivity {
     ratingBar.setStepSize(0.5f);
     ratingBar.setRating(rating.floatValue());
 
-
-    // Get Video
-    // View
-    youTubePlayerView = (YouTubePlayerView) findViewById(R.id.player);
-
-    // Call API
+    // Get Video - Call API
     httpClient = new AsyncHttpClient();
     fetchVideos(movieId);
   }

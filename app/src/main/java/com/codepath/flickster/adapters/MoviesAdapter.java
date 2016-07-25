@@ -15,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Shyam Rokde on 7/23/16.
  */
@@ -37,11 +40,7 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
       ViewHolderDetail viewHolder;
       if (convertView == null) {
         convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
-        viewHolder = new ViewHolderDetail();
-        // Get Views
-        viewHolder.ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
-        viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        viewHolder.tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+        viewHolder = new ViewHolderDetail(convertView);
 
         convertView.setTag(viewHolder);
       }else{
@@ -74,9 +73,8 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
       ViewHolderImage viewHolder;
       if (convertView == null) {
         convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie_backdrop, parent, false);
-        viewHolder = new ViewHolderImage();
-        // Get Views
-        viewHolder.ivImage = (ImageView) convertView.findViewById(R.id.ivMovieImage);
+        viewHolder = new ViewHolderImage(convertView);
+
         convertView.setTag(viewHolder);
       }else{
         viewHolder = (ViewHolderImage) convertView.getTag();
@@ -118,14 +116,22 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
 
 
   // View lookup cache
-  private static class ViewHolderDetail {
-    ImageView ivImage;
-    TextView tvTitle;
-    TextView tvOverview;
+  static class ViewHolderDetail {
+    @BindView(R.id.ivMovieImage) ImageView ivImage;
+    @BindView(R.id.tvTitle) TextView tvTitle;
+    @BindView(R.id.tvOverview) TextView tvOverview;
+
+    public ViewHolderDetail(View view){
+      ButterKnife.bind(this, view);
+    }
   }
 
-  private static class ViewHolderImage {
-    ImageView ivImage;
+  static class ViewHolderImage {
+    @BindView(R.id.ivMovieImage) ImageView ivImage;
+
+    public ViewHolderImage(View view){
+      ButterKnife.bind(this, view);
+    }
   }
 
 }

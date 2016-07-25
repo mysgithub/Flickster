@@ -14,6 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class PlayYouTubeActivity extends YouTubeBaseActivity {
@@ -23,17 +25,16 @@ public class PlayYouTubeActivity extends YouTubeBaseActivity {
   String videosUrl = "https://api.themoviedb.org/3/movie/%s/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
   String youTubeKey;
 
-  YouTubePlayerView youTubePlayerView;
+  @BindView(R.id.player) YouTubePlayerView youTubePlayerView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_play_you_tube);
+    ButterKnife.bind(this);
 
     // Get Movie Id and call API
     Long movieId = getIntent().getLongExtra("movieId", 0L);
-    // View
-    youTubePlayerView = (YouTubePlayerView) findViewById(R.id.player);
 
     // Call API
     httpClient = new AsyncHttpClient();

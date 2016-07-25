@@ -20,13 +20,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class MovieActivity extends AppCompatActivity {
 
+
   ArrayList<Movie> movies;
   MoviesAdapter movieAdapter;
-  ListView lvItems;
+
+  @BindView(R.id.lvMovies) ListView lvItems;
 
   private SwipeRefreshLayout swipeContainer;
   AsyncHttpClient httpClient;
@@ -39,13 +43,12 @@ public class MovieActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_movie);
+    ButterKnife.bind(this);
 
     // Lookup the swipe container view
     swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
     // Setup refresh listener which triggers new data loading
     swipeContainer.setOnRefreshListener(onRefreshListener);
-
-    lvItems = (ListView) findViewById(R.id.lvMovies);
 
     movies = new ArrayList<>();
     movieAdapter = new MoviesAdapter(this, movies);
